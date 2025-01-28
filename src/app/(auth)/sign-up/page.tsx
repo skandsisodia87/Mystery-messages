@@ -21,7 +21,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
-function singUpPage() {
+function SingupPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -181,4 +181,4 @@ function singUpPage() {
   );
 }
 
-export default singUpPage;
+export default SingupPage;

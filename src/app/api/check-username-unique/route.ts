@@ -58,6 +58,7 @@ export async function GET(request: Request) {
         status: 200,
       }
     );
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     return Response.json(
       {

@@ -7,7 +7,7 @@ export async function middleware(request: NextRequest) {
   const url = request.nextUrl;
   const token = await getToken({
     req: request,
-    secret: process.env.NEXTAUTH_SECRET,
+    secret: process.env.nextauthsecret,
   });
 
   if (

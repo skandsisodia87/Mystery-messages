@@ -1,15 +1,15 @@
 import { getServerSession } from 'next-auth/next';
 import dbConnect from '@/lib/dbConnect';
 import { User } from 'next-auth';
-import { NextRequest } from 'next/server';
 import { authOptions } from '../../auth/[...nextauth]/options';
 import UserModel from '@/model/user';
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { messageId: string } }
-) {
-  const messageId = params.messageId;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function DELETE({ params }:any) {
+  const { messageId } = params;
+  if (!messageId) {
+    return Response.json({ error: 'Message ID is required' }, { status: 400 });
+  }
   await dbConnect();
   const session = await getServerSession(authOptions);
   const user: User = session?.user as User;

@@ -12,7 +12,7 @@ const question = [
   'If you could swap lives with anyone for a day, who would it be and what would you do?',
 ];
 
-export function GET(request: Request) {
+export function GET() {
   try {
     const shuffledArray = question.sort(() => 0.5 - Math.random());
     const randomQuestions = shuffledArray.slice(0, 4);
@@ -24,6 +24,7 @@ export function GET(request: Request) {
       },
       { status: 200 }
     );
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     return Response.json(
       {

@@ -1,6 +1,7 @@
 import { resend } from '@/lib/resend';
 import VerificationEmail from '@/../emails/verificationsEmail';
 import ApiResponse from '@/types/ApiResponse';
+import { CreateEmailResponse } from 'resend';
 
 interface EmailProps {
   email: string;
@@ -14,7 +15,7 @@ export async function sendVerificationEmail({
   verifyCode,
 }: EmailProps): Promise<ApiResponse> {
   try {
-    const response: any = await resend.emails.send({
+    const response: CreateEmailResponse = await resend.emails.send({
       from: 'Acme <onboarding@resend.dev>',
       to: email,
       subject: 'Verification Code - Mystry Messages',

@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { AxiosError } from 'axios';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -20,36 +19,45 @@ import { Textarea } from '@/components/ui/textarea';
 import ApiResponse from '@/types/ApiResponse';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { messageSchema } from '@/schemas/messageSchema';
 import { useToast } from '@/hooks/use-toast';
 import { getsuggestMessages, sendMessage } from '@/services/services';
-import * as z from 'zod';
 
-export const newmessageSchema = z.object({
-  content: messageSchema,
-});
+interface FormData {
+  content: string;
+}
 
 export default function SendMessage() {
   const { toast } = useToast();
-  const params = useParams<{ username: string }>();
+  const params = useParams() as { username: string };
   const username = params.username;
   const [suggestMessage, setSuggestMessage] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSuggestLoading, setIsSuggestLoading] = useState(false);
 
-  const form = useForm<z.infer<typeof newmessageSchema>>({
-    resolver: zodResolver(newmessageSchema),
+  const form = useForm<FormData>({
+    defaultValues: { content: '' },
   });
 
   const handleMessageClick = (message: string) => {
     form.setValue('content', message);
   };
 
-  const onSubmit = (data: z.infer<typeof newmessageSchema>) => {
+  const onSubmit = (data: FormData) => {
+    if (!data.content.trim()) {
+      toast({
+        title: 'Error',
+        description: 'Message content cannot be empty',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setIsLoading(true);
     sendMessage(username, data.content)
       .then((response) => {
         toast({
-          title: response.data.message,
+          title: 'Message Sent',
+          description: response.data.message,
           variant: 'default',
         });
         form.reset({ content: '' });
@@ -59,7 +67,7 @@ export default function SendMessage() {
         toast({
           title: 'Error',
           description:
-            axiosError.response?.data.message ?? 'Failed to sent message',
+            axiosError.response?.data.message ?? 'Failed to send message',
           variant: 'destructive',
         });
       })
@@ -69,19 +77,24 @@ export default function SendMessage() {
   };
 
   const fetchSuggestedMessages = () => {
+    setIsSuggestLoading(true);
     getsuggestMessages()
       .then((res) => {
         setSuggestMessage(res.data.question ?? []);
       })
       .catch((err) => {
         const axiosError = err as AxiosError<ApiResponse>;
+        console.error('Error fetching suggested messages:', axiosError);
         toast({
           title: 'Error',
           description:
             axiosError.response?.data.message ??
-            'Failed to fetch suggest message',
+            'Failed to fetch suggested messages',
           variant: 'destructive',
         });
+      })
+      .finally(() => {
+        setIsSuggestLoading(false);
       });
   };
 
@@ -102,6 +115,7 @@ export default function SendMessage() {
                   <Textarea
                     placeholder='Write your anonymous message here'
                     className='resize-none'
+                    aria-label='Write your anonymous message'
                     {...field}
                   />
                 </FormControl>
@@ -127,9 +141,16 @@ export default function SendMessage() {
           <Button
             onClick={fetchSuggestedMessages}
             className='my-4'
-            // disabled={isSuggestLoading}
+            disabled={isSuggestLoading}
           >
-            Suggest Messages
+            {isSuggestLoading ? (
+              <>
+                <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                Loading...
+              </>
+            ) : (
+              'Suggest Messages'
+            )}
           </Button>
           <p>Click on any message below to select it.</p>
         </div>
@@ -140,7 +161,7 @@ export default function SendMessage() {
           <CardContent className='flex flex-col space-y-4'>
             {suggestMessage.map((message, index) => (
               <Button
-                key={index}
+                key={`${message}-${index}`}
                 variant='outline'
                 className='mb-2'
                 onClick={() => handleMessageClick(message)}

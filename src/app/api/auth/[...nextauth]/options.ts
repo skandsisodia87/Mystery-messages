@@ -13,6 +13,7 @@ export const authOptions: NextAuthOptions = {
         username: { label: 'Username', type: 'text' },
         password: { label: 'Password', type: 'password' },
       },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       async authorize(credentials: any): Promise<any> {
         await dbConnect();
         try {
@@ -41,6 +42,7 @@ export const authOptions: NextAuthOptions = {
           }
 
           return user;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
           throw new Error(error);
         }
@@ -73,5 +75,5 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.nextauthsecret,
 };

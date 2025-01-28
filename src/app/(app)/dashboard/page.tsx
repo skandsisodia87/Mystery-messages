@@ -20,7 +20,7 @@ import { useSession } from 'next-auth/react';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-function dashboard() {
+function Dashboard() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const [isSwitchLoading, setIsSwitchLoading] = useState(false);
@@ -178,7 +178,7 @@ function dashboard() {
       </Button>
       <div className='mt-4 grid grid-cols-1 md:grid-cols-2 gap-6'>
         {messages.length > 0 ? (
-          messages.map((message, index) => (
+          messages.map((message) => (
             <MessageCard
               key={message._id as React.Key}
               message={message}
@@ -193,4 +193,4 @@ function dashboard() {
   );
 }
 
-export default dashboard;
+export default Dashboard;

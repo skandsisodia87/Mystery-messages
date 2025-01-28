@@ -4,7 +4,7 @@ import { authOptions } from '../auth/[...nextauth]/options';
 import mongoose from 'mongoose';
 import UserModel from '@/model/user';
 
-export async function GET(request: Request) {
+export async function GET() {
   await dbConnect();
 
   const session = await getServerSession(authOptions);
@@ -61,6 +61,7 @@ export async function GET(request: Request) {
       { success: true, messages: usermessages[0].messages },
       { status: 200 }
     );
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     return Response.json(
       {

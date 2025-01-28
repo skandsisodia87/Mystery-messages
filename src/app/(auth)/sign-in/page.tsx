@@ -2,7 +2,7 @@
 
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -20,7 +20,7 @@ import { Input } from '@/components/ui/input';
 import { signInSchema } from '@/schemas/signInSchema';
 import { signIn } from 'next-auth/react';
 
-function singInPage() {
+function SinginPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -123,4 +123,4 @@ function singInPage() {
   );
 }
 
-export default singInPage;
+export default SinginPage;
