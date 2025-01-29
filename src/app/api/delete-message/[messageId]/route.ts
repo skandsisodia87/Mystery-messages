@@ -5,8 +5,11 @@ import { authOptions } from '../../auth/[...nextauth]/options';
 import UserModel from '@/model/user';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function DELETE({ params }:any) {
-  const { messageId } = params;
+export async function DELETE(
+  request: Request,
+  { params }: { params: { messageid: string } }
+) {
+  const messageId = params?.messageid;
   if (!messageId) {
     return Response.json({ error: 'Message ID is required' }, { status: 400 });
   }
